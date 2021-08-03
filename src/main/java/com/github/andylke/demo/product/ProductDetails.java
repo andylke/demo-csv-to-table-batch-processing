@@ -1,6 +1,5 @@
-package com.github.andylke.demo.customer;
+package com.github.andylke.demo.product;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -11,20 +10,20 @@ import javax.persistence.Id;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
-public class CustomerDetails {
+public class ProductDetails {
 
   @Id
   @GeneratedValue
   private UUID id;
 
-  @Column(unique = true, nullable = false, precision = 20)
-  private BigDecimal customerNumber;
-
-  @Column(nullable = false, length = 50)
+  @Column(unique = true, nullable = false, length = 50)
   private String typeCode;
 
-  @Column(nullable = false, length = 300)
-  private String name;
+  @Column(nullable = false, length = 3)
+  private String currencyCode;
+
+  @Column(nullable = true, length = 300)
+  private String description;
 
   public UUID getId() {
     return id;
@@ -32,14 +31,6 @@ public class CustomerDetails {
 
   public void setId(UUID id) {
     this.id = id;
-  }
-
-  public BigDecimal getCustomerNumber() {
-    return customerNumber;
-  }
-
-  public void setCustomerNumber(BigDecimal customerNumber) {
-    this.customerNumber = customerNumber;
   }
 
   public String getTypeCode() {
@@ -50,12 +41,20 @@ public class CustomerDetails {
     this.typeCode = typeCode;
   }
 
-  public String getName() {
-    return name;
+  public String getCurrencyCode() {
+    return currencyCode;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setCurrencyCode(String currencyCode) {
+    this.currencyCode = currencyCode;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @Override

@@ -1,4 +1,4 @@
-number, type, name
-1, Type A, Name A
-2, Type B, Name B
-3, Type C, Name C
+customerNumber, typeCode, name
+1, Customer_Type_A, Name A
+2, Customer_Type_B, Name B
+3, Customer_Type_C, Name C

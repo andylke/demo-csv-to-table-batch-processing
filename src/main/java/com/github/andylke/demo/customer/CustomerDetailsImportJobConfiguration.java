@@ -23,7 +23,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(CustomerDetailsImportProperties.class)
-class CustomerDetailsImportConfiguration {
+public class CustomerDetailsImportJobConfiguration {
+
+  public static final String JOB_NAME = "customerDetailsImportJob";
 
   @Autowired
   private CustomerDetailsImportProperties customerDetailsImportProperties;
@@ -40,10 +42,10 @@ class CustomerDetailsImportConfiguration {
   @Autowired
   private CustomerDetailsRepository customerDetailsRepository;
 
-  @Bean
+  @Bean(name = JOB_NAME)
   public Job customerDetailsImportJob() {
     return jobBuilderFactory
-        .get(customerDetailsImportProperties.getName() + "-job")
+        .get(JOB_NAME)
         .incrementer(new RunIdIncrementer())
         .start(customerDetailsImportStep())
         .build();
@@ -52,7 +54,7 @@ class CustomerDetailsImportConfiguration {
 
   private Step customerDetailsImportStep() {
     return stepBuilderFactory
-        .get(customerDetailsImportProperties.getName() + "-step")
+        .get("customerDetailsImportStep")
         .<CustomerDetails, CustomerDetails>chunk(10)
         .reader(customerDetailsReader())
         .processor(customerDetailsProcessor())
@@ -69,7 +71,7 @@ class CustomerDetailsImportConfiguration {
   @StepScope
   public FlatFileItemReader<CustomerDetails> customerDetailsReader() {
     return new FlatFileItemReaderBuilder<CustomerDetails>()
-        .name(customerDetailsImportProperties.getName() + "-reader")
+        .name("customerDetailsReader")
         .resource(resourcePatternResolver.getResource(customerDetailsImportProperties.getFilePath()))
         .delimited()
         .names(customerDetailsImportProperties.getFieldNames())

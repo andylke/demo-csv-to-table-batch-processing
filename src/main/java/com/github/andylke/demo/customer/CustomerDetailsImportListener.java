@@ -10,7 +10,7 @@ public class CustomerDetailsImportListener {
 
   @OnSkipInProcess
   public void onSkipInProcess(CustomerDetails item, Throwable t) {
-    LOGGER.info("Item {} skipped due to {}", item, t.getMessage());
+    LOGGER.info("Customer {} skipped due to {}", item, t.getMessage());
   }
 
 }

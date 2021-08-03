@@ -1,14 +1,14 @@
-package com.github.andylke.demo.customer;
+package com.github.andylke.demo.product;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "demo.customer-details")
-public class CustomerDetailsImportProperties {
+@ConfigurationProperties(prefix = "demo.product-details")
+public class ProductDetailsImportProperties {
 
-  private String filePath = "classpath:customer-details.csv";
+  private String filePath = "product-details.csv";
 
-  private String[] fieldNames = new String[] { "number", "type", "name" };
+  private String[] fieldNames = new String[] { "typeCode", "currencyCode", "description" };
 
   private int lineToSkip = 1;
 
