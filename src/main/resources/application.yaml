@@ -9,21 +9,3 @@ spring:
   batch:
     job:
       names: demoImportJob
-
-demo:
-  customer-details:
-    name: customer-details-import
-    file-path: 'classpath:customer-details.csv'
-    field-names:
-    - customerNumber
-    - typeCode
-    - name
-    line-to-skip: 1
-  product-details:
-    name: product-details-import
-    file-path: 'classpath:product-details.csv'
-    field-names:
-    - typeCode
-    - currencyCode
-    - description
-    line-to-skip: 1

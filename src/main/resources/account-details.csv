@@ -1,0 +1,4 @@
+accountNumber, customerNumber, productTypeCode, currencyCode, balance
+1, 1, Product_Type_A, MYR, 100
+2, 0, Product_Type_B, SGD, 200
+3, 3, Product_Type_C, USD, 300

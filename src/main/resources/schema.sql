@@ -22,3 +22,16 @@ CREATE TABLE public.product_details (
   CONSTRAINT product_details_uk UNIQUE(type_code)
 );
 
+
+DROP TABLE IF EXISTS public.account_details;
+
+CREATE TABLE public.account_details (
+  id UUID not null,
+  account_number decimal(20, 0) not null,
+  customer_number decimal(20, 0) not null,
+  product_type_code varchar(50) not null,
+  currency_code varchar(3) not null,
+  balance decimal(25, 4) null,
+  CONSTRAINT account_details_pk PRIMARY KEY (id),
+  CONSTRAINT account_details_uk UNIQUE(account_number)
+);

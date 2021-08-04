@@ -11,11 +11,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.github.andylke.demo.account.AccountDetailsImportJobConfiguration;
 import com.github.andylke.demo.customer.CustomerDetailsImportJobConfiguration;
 import com.github.andylke.demo.product.ProductDetailsImportJobConfiguration;
 
 @Configuration(proxyBeanMethods = false)
-@Import({ CustomerDetailsImportJobConfiguration.class, ProductDetailsImportJobConfiguration.class })
+@Import({ 
+  CustomerDetailsImportJobConfiguration.class, 
+  ProductDetailsImportJobConfiguration.class, 
+  AccountDetailsImportJobConfiguration.class
+})
 public class DemoImportJobConfiguration {
 
   public static final String JOB_NAME = "demoImportJob";
@@ -34,6 +39,10 @@ public class DemoImportJobConfiguration {
   @Qualifier(ProductDetailsImportJobConfiguration.JOB_NAME)
   private Job productDetailsImportJob;
 
+  @Autowired
+  @Qualifier(AccountDetailsImportJobConfiguration.JOB_NAME)
+  private Job accountDetailsImportJob;
+
   @Bean
   public Job demoImportJob() {
     return jobBuilderFactory
@@ -41,6 +50,7 @@ public class DemoImportJobConfiguration {
         .incrementer(new RunIdIncrementer())
         .start(customerDetailsImport())
         .next(productDetailsImport())
+        .next(accountDetailsImport())
         .build();
   }
 
@@ -55,6 +65,13 @@ public class DemoImportJobConfiguration {
     return stepBuilderFactory
         .get(ProductDetailsImportJobConfiguration.JOB_NAME)
         .job(productDetailsImportJob)
+        .build();
+  }
+
+  private Step accountDetailsImport() {
+    return stepBuilderFactory
+        .get(AccountDetailsImportJobConfiguration.JOB_NAME)
+        .job(accountDetailsImportJob)
         .build();
   }
 }

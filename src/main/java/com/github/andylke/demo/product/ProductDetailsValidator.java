@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.batch.item.validator.Validator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductDetailsValidator implements Validator<ProductDetails> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProductDetailsValidator.class);
@@ -14,6 +16,10 @@ public class ProductDetailsValidator implements Validator<ProductDetails> {
   public void validate(ProductDetails value) throws ValidationException {
     LOGGER.info("Validating {}", value);
     
+    validateProductDetails(value);
+  }
+
+  private void validateProductDetails(ProductDetails value) {
     if (StringUtils.isBlank(value.getTypeCode())) {
       throw new ValidationException("Field [typeCode] must not be blank.");
     }

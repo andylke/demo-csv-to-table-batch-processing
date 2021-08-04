@@ -1,4 +1,4 @@
 typeCode, currencyCode, description
 Product_Type_A, MYR, Description A
-Product_Type_B, SGD, Description B
+Product_Type_B, , Description B
 Product_Type_C, USD, Description C

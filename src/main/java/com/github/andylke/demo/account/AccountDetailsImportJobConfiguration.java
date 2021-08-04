@@ -1,4 +1,4 @@
-package com.github.andylke.demo.customer;
+package com.github.andylke.demo.account;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -21,9 +21,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 @Configuration(proxyBeanMethods = false)
-public class CustomerDetailsImportJobConfiguration {
+public class AccountDetailsImportJobConfiguration {
 
-  public static final String JOB_NAME = "customerDetailsImportJob";
+  public static final String JOB_NAME = "accountDetailsImportJob";
 
   @Autowired
   private JobBuilderFactory jobBuilderFactory;
@@ -35,73 +35,73 @@ public class CustomerDetailsImportJobConfiguration {
   private ResourcePatternResolver resourcePatternResolver;
   
   @Autowired
-  private CustomerDetailsRepository customerDetailsRepository;
+  private AccountDetailsRepository accountDetailsRepository;
 
   @Autowired
-  private CustomerDetailsValidator customerDetailsValidator;
+  private AccountDetailsValidator accountDetailsValidator;
 
   @Bean(name = JOB_NAME)
-  public Job customerDetailsImportJob() {
+  public Job accountDetailsImportJob() {
     return jobBuilderFactory
         .get(JOB_NAME)
         .incrementer(new RunIdIncrementer())
-        .start(customerDetailsImportStep())
+        .start(accountDetailsImportStep())
         .build();
 
   }
 
-  private Step customerDetailsImportStep() {
+  private Step accountDetailsImportStep() {
     return stepBuilderFactory
-        .get("customerDetailsImportStep")
-        .<CustomerDetails, CustomerDetails>chunk(10)
-        .reader(customerDetailsReader())
-        .processor(customerDetailsProcessor())
-        .writer(customerDetailsWriter())
+        .get(JOB_NAME)
+        .<AccountDetails, AccountDetails>chunk(10)
+        .reader(accountDetailsReader())
+        .processor(accountDetailsProcessor())
+        .writer(accountDetailsWriter())
         .faultTolerant()
-        .skipPolicy(customerDetailsImportSkipPolicy())
+        .skipPolicy(accountDetailsImportSkipPolicy())
         .skip(ValidationException.class)
         .noRollback(ValidationException.class)
-        .listener(customerDetailsImportListener())
+        .listener(accountDetailsImportListener())
         .build();
   }
 
   @Bean
   @StepScope
-  public FlatFileItemReader<CustomerDetails> customerDetailsReader() {
-    return new FlatFileItemReaderBuilder<CustomerDetails>()
-        .name("customerDetailsReader")
-        .resource(resourcePatternResolver.getResource("customer-details.csv"))
+  public FlatFileItemReader<AccountDetails> accountDetailsReader() {
+    return new FlatFileItemReaderBuilder<AccountDetails>()
+        .name("accountDetailsReader")
+        .resource(resourcePatternResolver.getResource("account-details.csv"))
         .delimited()
-        .names(new String[] { "customerNumber", "typeCode", "name" })
+        .names(new String[] { "accountNumber", "customerNumber", "productTypeCode", "currencyCode", "balance" })
         .linesToSkip(1)
-        .fieldSetMapper(new BeanWrapperFieldSetMapper<CustomerDetails>() {
+        .fieldSetMapper(new BeanWrapperFieldSetMapper<AccountDetails>() {
           {
-            setTargetType(CustomerDetails.class);
+            setTargetType(AccountDetails.class);
           }
         })
         .build();
   }
 
   @Bean
-  public ValidatingItemProcessor<CustomerDetails> customerDetailsProcessor() {
-    return new ValidatingItemProcessor<CustomerDetails>(customerDetailsValidator);
+  public ValidatingItemProcessor<AccountDetails> accountDetailsProcessor() {
+    return new ValidatingItemProcessor<AccountDetails>(accountDetailsValidator);
   }
 
   @Bean
-  public RepositoryItemWriter<CustomerDetails> customerDetailsWriter() {
-    return new RepositoryItemWriterBuilder<CustomerDetails>()
-        .repository(customerDetailsRepository)
+  public RepositoryItemWriter<AccountDetails> accountDetailsWriter() {
+    return new RepositoryItemWriterBuilder<AccountDetails>()
+        .repository(accountDetailsRepository)
         .methodName("save")
         .build();
   }
 
-  private SkipPolicy customerDetailsImportSkipPolicy() {
+  private SkipPolicy accountDetailsImportSkipPolicy() {
     return new AlwaysSkipItemSkipPolicy();
   }
 
   @Bean
-  private CustomerDetailsImportListener customerDetailsImportListener() {
-    return new CustomerDetailsImportListener();
+  private AccountDetailsImportListener accountDetailsImportListener() {
+    return new AccountDetailsImportListener();
   }
 
 }

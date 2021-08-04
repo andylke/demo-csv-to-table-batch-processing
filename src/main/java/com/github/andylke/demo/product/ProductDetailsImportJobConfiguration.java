@@ -16,19 +16,14 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.validator.ValidatingItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(ProductDetailsImportProperties.class)
 public class ProductDetailsImportJobConfiguration {
 
   public static final String JOB_NAME = "productDetailsImportJob";
-
-  @Autowired
-  private ProductDetailsImportProperties productDetailsImportProperties;
 
   @Autowired
   private JobBuilderFactory jobBuilderFactory;
@@ -41,6 +36,9 @@ public class ProductDetailsImportJobConfiguration {
   
   @Autowired
   private ProductDetailsRepository productDetailsRepository;
+
+  @Autowired
+  private ProductDetailsValidator productDetailsValidator;
 
   @Bean(name = JOB_NAME)
   public Job productDetailsImportJob() {
@@ -72,10 +70,10 @@ public class ProductDetailsImportJobConfiguration {
   public FlatFileItemReader<ProductDetails> productDetailsReader() {
     return new FlatFileItemReaderBuilder<ProductDetails>()
         .name("productDetailsReader")
-        .resource(resourcePatternResolver.getResource(productDetailsImportProperties.getFilePath()))
+        .resource(resourcePatternResolver.getResource("product-details.csv"))
         .delimited()
-        .names(productDetailsImportProperties.getFieldNames())
-        .linesToSkip(productDetailsImportProperties.getLineToSkip())
+        .names(new String[] { "typeCode", "currencyCode", "description" })
+        .linesToSkip(1)
         .fieldSetMapper(new BeanWrapperFieldSetMapper<ProductDetails>() {
           {
             setTargetType(ProductDetails.class);
@@ -86,7 +84,7 @@ public class ProductDetailsImportJobConfiguration {
 
   @Bean
   public ValidatingItemProcessor<ProductDetails> productDetailsProcessor() {
-    return new ValidatingItemProcessor<ProductDetails>(new ProductDetailsValidator());
+    return new ValidatingItemProcessor<ProductDetails>(productDetailsValidator);
   }
 
   @Bean
